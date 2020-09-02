@@ -1,1 +1,8 @@
-ID: 1 crossed going down at Wed Sep  2 13:38:22 2020
+ID: 0 crossed going Exit at Wed Sep  2 16:27:39 2020
+ID: 1 crossed going Exit at Wed Sep  2 16:27:41 2020
+ID: 2 crossed going Exit at Wed Sep  2 16:27:42 2020
+ID: 4 crossed going Entry at Wed Sep  2 16:27:42 2020
+ID: 6 crossed going Exit at Wed Sep  2 16:27:43 2020
+ID: 8 crossed going Entry at Wed Sep  2 16:27:43 2020
+ID: 9 crossed going Entry at Wed Sep  2 16:27:43 2020
+ID: 8 crossed going Exit at Wed Sep  2 16:27:45 2020
