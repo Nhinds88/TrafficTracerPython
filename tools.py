@@ -88,7 +88,7 @@ def process_video(log, ret, frame, areaThreshold, entry_limit, entry_line, exit_
                         if i.getDir() == 'exit' and i.getY() > exit_limit:
                             i.setDone()
                         elif i.getDir() == 'entry' and i.getY() < entry_limit:
-                            i.getDone()
+                            i.setDone()
                     if i.timedOut():
                         
                         index = persons.index(i)
@@ -110,8 +110,8 @@ def process_video(log, ret, frame, areaThreshold, entry_limit, entry_line, exit_
     
     frame = cv2.polylines(frame, [line1], False, (255,0,0), thickness=2)
     frame = cv2.polylines(frame, [line2], False, (0,0,255), thickness=2)
-    frame = cv2.polylines(frame, [line3], False, (255,255,255), thickness=1)
-    frame = cv2.polylines(frame, [line4], False, (255,255,255), thickness=1)
+    frame = cv2.polylines(frame, [line3], False, (0,255,0), thickness=1)
+    frame = cv2.polylines(frame, [line4], False, (255,255,51), thickness=1)
     
     cv2.putText(frame, enter_str, (10,40), font, 0.5, (255,255,255), 2, cv2.LINE_AA)
     cv2.putText(frame, enter_str, (10,40), font, 0.5, (0,0,255), 1, cv2.LINE_AA)
@@ -119,4 +119,4 @@ def process_video(log, ret, frame, areaThreshold, entry_limit, entry_line, exit_
     cv2.putText(frame, exit_str, (10,90), font, 0.5, (255,0,0), 1, cv2.LINE_AA)
     
     cv2.imshow('Frame', frame)
-    cv2.imshow('Mask', maskA)
+    #cv2.imshow('Mask', maskA)
