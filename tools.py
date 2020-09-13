@@ -14,6 +14,9 @@ def cameraSource(source):
 def lineCrossingPlacement(num, XorY):
     return num, XorY
 
+def lineCoords(x, y):
+    return x, y
+
 def majority(x):
     map = {}
     max = ('', 0)
@@ -30,7 +33,7 @@ def majority(x):
     
     return max
 
-def process_video(video, values, motion, count1, count2, avg):
+def process_video(video, values, motion, entry, exited, avg, entry_S, entry_E, exit_S, exit_E):
     
     while video.isOpened():
     
@@ -56,7 +59,7 @@ def process_video(video, values, motion, count1, count2, avg):
                 
             for c in count:
                     
-                if cv2.contourArea(c) < 5000:
+                if cv2.contourArea(c) < 3000:
                     continue
                     
                 (x, y, w, h) = cv2.boundingRect(c)
@@ -68,7 +71,7 @@ def process_video(video, values, motion, count1, count2, avg):
                     
             noX = len(values)
                 
-            if (noX > 2):
+            if (noX > 1):
                     
                 difference = values[noX - 1] - values[noX - 2]
                     
@@ -88,24 +91,24 @@ def process_video(video, values, motion, count1, count2, avg):
                         
                     if val == 1 and times >= 15:
                             
-                        count1 += 1
+                        entry += 1
                             
                     else:
                             
-                        count2 += 1
+                        exited += 1
                             
                 values = list()
                 motion = list()
                     
-            cv2.line(frame, (260, 0), (260, 480), (0, 255, 0), 2)
-            cv2.line(frame, (420, 0), (420, 480), (255, 0, 0), 2)
+            #cv2.line(frame, entry_S, entry_E, (0, 255, 0), 2) # Green - Entry
+            #cv2.line(frame, exit_S, exit_E, (255, 0, 0), 2) # Blue - Exit
                 
-            cv2.putText(frame, "Enter: {}".format(count1), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0 , 255), 2)
-            cv2.putText(frame, "Exit: {}".format(count2), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            cv2.putText(frame, "Enter: {}".format(entry), (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0 , 255), 2)
+            cv2.putText(frame, "Exit: {}".format(exited), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
                 
             cv2.imshow("Frame", frame)
             cv2.imshow("Gray", gray)
             cv2.imshow("FrameDelta", frameDelta)
                 
-            if cv2.waitKey(5) == ord('x'):
-                break
+        if cv2.waitKey(5) == ord('x'):
+            break
