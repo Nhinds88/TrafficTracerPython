@@ -37,10 +37,10 @@ class Customer:
         self.y = yn
     def setDone(self):
         self.done = True
-    def enteringV(self,mid_start,mid_end):
+    def enteringV(self,point):
         if len(self.tracks) >= 2:
             if self.state == '0':
-                if self.tracks[-1][1] < mid_end and self.tracks[-2][1] >= mid_end:
+                if self.tracks[-1][1] < point and self.tracks[-2][1] >= point:
                     state = '1'
                     self.dir = 'entered'
                     self.eventTime = time.asctime(time.localtime())
@@ -50,10 +50,10 @@ class Customer:
                 return False
         else:
             return False
-    def exitingV(self,mid_start,mid_end):
+    def exitingV(self,point):
         if len(self.tracks) >= 2:
             if self.state == '0':
-                if self.tracks[-1][1] > mid_start and self.tracks[-2][1] <= mid_start: 
+                if self.tracks[-1][1] > point and self.tracks[-2][1] <= point: 
                     state = '1'
                     self.dir = 'exited'
                     self.eventTime = time.asctime(time.localtime())
@@ -63,10 +63,10 @@ class Customer:
                 return False
         else:
             return False
-    def enteringH(self,mid_start,mid_end):
+    def enteringH(self,point):
         if len(self.tracks) >= 2:
             if self.state == '0':
-                if self.tracks[-1][0] < mid_end and self.tracks[-2][0] >= mid_end: 
+                if self.tracks[-1][0] < point and self.tracks[-2][0] >= point: 
                     state = '1'
                     self.dir = 'entered'
                     self.eventTime = time.asctime(time.localtime())
@@ -76,10 +76,10 @@ class Customer:
                 return False
         else:
             return False
-    def exitingH(self,mid_start,mid_end):
+    def exitingH(self,point):
         if len(self.tracks) >= 2:
             if self.state == '0':
-                if self.tracks[-1][0] > mid_start and self.tracks[-2][0] <= mid_start: 
+                if self.tracks[-1][0] > point and self.tracks[-2][0] <= point: 
                     state = '1'
                     self.dir = 'exited'
                     self.eventTime = time.asctime(time.localtime())

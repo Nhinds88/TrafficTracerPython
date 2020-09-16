@@ -10,7 +10,7 @@ import numpy as np
 import Person
 
 # video = cv2.VideoCapture('./vids/TestVideo.avi')
-video = cv2.VideoCapture('./vids/PexelsVideos4698.mp4')
+video = cv2.VideoCapture('./vids/Pexels Videos 4698.mp4')
 
 ret, frame1 = video.read()
 ret, frame2 = video.read()
@@ -57,19 +57,19 @@ while video.isOpened():
                     i.updateCoords(x, y)
                     
                     # if i.enteringV(240, 240) == True:
-                    if i.enteringH(960, 960) == True:
+                    if i.enteringH(960) == True:
                         
                         entry += 1
                         
                     #elif i.exitingV(240, 240) == True:
-                    if i.exitingH(960, 960) == True:
+                    if i.exitingH(960) == True:
                         
                         exited += 1
                         
                     break
                 
             if new == True:
-                p = Person.Customer(peopleID, x, y, 5)
+                p = Person.Customer(peopleID, x, y)
                 people.append(p)
                 peopleID += 1
             
