@@ -7,6 +7,9 @@ Created on Tue Sep  1 11:54:34 2020
 
 import cv2
 import Person
+import mysql.connector
+
+from datetime import datetime
 
 def cameraSource(source):
     return source
@@ -26,7 +29,40 @@ def setResolution(video, height, width):
 def contourLimit(c):
     return c
 
-def process_video(video, lineStart, lineEnd, v_or_h, contourLimit):
+def dbConnnect(host, user, password, db):
+    
+    mydb = mysql.connector.connect(
+        host = host, 
+        user = user, 
+        password = password, 
+        database = db,
+        auth_plugin='mysql_native_password'
+        )
+    
+    return mydb
+
+def getTime():
+    
+    now = datetime.now()
+    date = now.strftime('%Y-%m-%d')
+    eventTime = now.strftime('%H:%M:%S')
+
+    return date, eventTime
+
+def insertPeopleData(ete, pid, mid, dur, date, t, db):
+    
+    cursor = db.cursor()
+    
+    sql = 'INSERT INTO foottraffic (enterorexit, customerid, merchantid, dur, date, time) VALUES (%s, %s, %s, %s, %s, %s)'
+    val = (ete, pid, mid, dur, date, t)
+
+    cursor.execute(sql, val)
+    
+    db.commit()
+
+    
+
+def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, db):
     
     ret, frame1 = video.read()
     ret, frame2 = video.read()
@@ -77,10 +113,18 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit):
                             if i.enteringV(lineEnd[1]) == True:
                                 
                                 entry += 1
+        
+                                t = getTime()
+                                
+                                insertPeopleData('enter', peopleID, merchantid, 0.0, t[0], t[1], db)
                                 
                             if i.exitingV(lineStart[1]) == True:
                                 
                                 exited += 1
+                                
+                                t = getTime()
+                                
+                                insertPeopleData('exit', peopleID, merchantid, 0.0, t[0], t[1], db)
                                 
                         if v_or_h == 'h':
                             
@@ -88,9 +132,17 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit):
                                 
                                 entry += 1
                                 
+                                t = getTime()
+                                
+                                insertPeopleData('enter', peopleID, merchantid, 0.0, t[0], t[1], db)
+                                
                             if i.exitingH(lineStart[0]) == True:
                                 
                                 exited += 1
+                                
+                                t = getTime()
+                                
+                                insertPeopleData('exit', peopleID, merchantid, 0.0, t[0], t[1], db)
                             
                         break
                     
