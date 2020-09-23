@@ -71,6 +71,7 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
     video.set(3, 600)
     
     peopleID = 0
+    custID = 0
     people = []
     
     entry = 0
@@ -113,36 +114,40 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
                             if i.enteringV(lineEnd[1]) == True:
                                 
                                 entry += 1
+                                custID += 1
         
                                 t = getTime()
                                 
-                                insertPeopleData('enter', peopleID, merchantid, 0.0, t[0], t[1], db)
+                                insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
                                 
                             if i.exitingV(lineStart[1]) == True:
                                 
                                 exited += 1
+                                custID += 1
                                 
                                 t = getTime()
                                 
-                                insertPeopleData('exit', peopleID, merchantid, 0.0, t[0], t[1], db)
+                                insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
                                 
                         if v_or_h == 'h':
                             
                             if i.enteringH(lineEnd[0]) == True:
                                 
                                 entry += 1
+                                custID
                                 
                                 t = getTime()
                                 
-                                insertPeopleData('enter', peopleID, merchantid, 0.0, t[0], t[1], db)
+                                insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
                                 
                             if i.exitingH(lineStart[0]) == True:
                                 
                                 exited += 1
+                                custID += 1
                                 
                                 t = getTime()
                                 
-                                insertPeopleData('exit', peopleID, merchantid, 0.0, t[0], t[1], db)
+                                insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
                             
                         break
                     

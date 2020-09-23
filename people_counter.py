@@ -13,6 +13,7 @@ import tools
 cameraFeed = tools.cameraSource('./vids/TestVideo.avi')
 #cameraFeed = tools.cameraSource('videoplayback.mp4')
 #cameraFeed = tools.cameraSource('./vids/videoplayback.mp4')
+#cameraFeed = tools.cameraSource('http://192.168.0.162:5000/')
 
 startPoint = tools.lineCoords(0, 240)
 endPoint = tools.lineCoords(640, 240)
