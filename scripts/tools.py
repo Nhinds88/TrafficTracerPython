@@ -75,32 +75,9 @@ def insertPeopleData(ete, pid, mid, dur, date, t, db):
 def change_res(cap, width, height):
     cap.set(3, width)
     cap.set(4, height)
-    
-# grab resolution dimensions and set video capture to it.
-def get_dims(cap, res='1080p'):
-    width, height = STD_DIMENSIONS["480p"]
-    if res in STD_DIMENSIONS:
-        width,height = STD_DIMENSIONS[res]
-    ## change the current caputre device
-    ## to the resulting resolution
-    change_res(cap, width, height)
-    return width, height
+      
 
-# Video Encoding, might require additional installs
-# Types of Codes: http://www.fourcc.org/codecs.php
-VIDEO_TYPE = {
-    'avi': cv2.VideoWriter_fourcc(*'XVID'),
-    #'mp4': cv2.VideoWriter_fourcc(*'H264'),
-    'mp4': cv2.VideoWriter_fourcc(*'XVID'),
-}
-
-def get_video_type(filename):
-    filename, ext = os.path.splitext(filename)
-    if ext in VIDEO_TYPE:
-      return  VIDEO_TYPE[ext]
-    return VIDEO_TYPE['avi']    
-
-def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, db):
+def process_video(video, lineStart, lineEnd, v_or_h, flipped, contourLimit, merchantid, db):
     
     ret, frame1 = video.read()
     ret, frame2 = video.read()
@@ -149,43 +126,91 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
                         
                         if v_or_h == 'v':
                             
-                            if i.enteringV(lineEnd[1]) == True:
+                            if flipped == True:
                                 
-                                entry += 1
-                                custID += 1
-        
-                                t = getTime()
+                                if i.enteringV(lineEnd[0]) == True:
                                 
-                                insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
+                                    entry += 1
+                                    custID += 1
+            
+                                    t = getTime()
+                                    
+                                    insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
+                                    
+                                if i.exitingV(lineStart[0]) == True:
+                                    
+                                    exited += 1
+                                    custID += 1
+                                    
+                                    t = getTime()
+                                    
+                                    insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
+                                    
+                            else:
                                 
-                            if i.exitingV(lineStart[1]) == True:
-                                
-                                exited += 1
-                                custID += 1
-                                
-                                t = getTime()
-                                
-                                insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
+                                if i.enteringV(lineEnd[1]) == True:
+                                    
+                                    entry += 1
+                                    custID += 1
+            
+                                    t = getTime()
+                                    
+                                    insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
+                                    
+                                if i.exitingV(lineStart[1]) == True:
+                                    
+                                    exited += 1
+                                    custID += 1
+                                    
+                                    t = getTime()
+                                    
+                                    insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
                                 
                         if v_or_h == 'h':
                             
-                            if i.enteringH(lineEnd[0]) == True:
+                            if flipped == True:
                                 
-                                entry += 1
-                                custID
+                                if i.enteringH(lineEnd[1]) == True:
+                                    
+                                    print(i.getId())
                                 
-                                t = getTime()
+                                    entry += 1
+                                    custID += 1
+                                    
+                                    t = getTime()
+                                    
+                                    insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
+                                    
+                                if i.exitingH(lineStart[1]) == True:
+                                    
+                                    print(i.getId())
+                                    
+                                    exited += 1
+                                    custID += 1
+                                    
+                                    t = getTime()
+                                    
+                                    insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
                                 
-                                insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
+                            else:
                                 
-                            if i.exitingH(lineStart[0]) == True:
-                                
-                                exited += 1
-                                custID += 1
-                                
-                                t = getTime()
-                                
-                                insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
+                                if i.enteringH(lineEnd[0]) == True:
+                                    
+                                    entry += 1
+                                    custID += 1
+                                    
+                                    t = getTime()
+                                    
+                                    insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
+                                    
+                                if i.exitingH(lineStart[0]) == True:
+                                    
+                                    exited += 1
+                                    custID += 1
+                                    
+                                    t = getTime()
+                                    
+                                    insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
                             
                         break
                     
@@ -195,6 +220,7 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
                     peopleID += 1
                 
                 cv2.rectangle(frame1, (x,y), (x + w, y + h), (0, 255, 0), 2)
+                cv2.circle(frame1, (x,y), 5, (0, 0, 255), 2)
                 
                 cv2.putText(frame1, "Entered: {}".format(entry), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
                 cv2.putText(frame1, "Exited: {}".format(exited), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1) 
@@ -204,9 +230,11 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
             ret, frame2 = video.read()
             
         else:
+            print("Entry " + str(entry))
+            print("Exit " + str(exited))
             break
         
-        if cv2.waitKey(5) == ord('x'):
+        if cv2.waitKey(20) == ord('x'):
                 break
             
     cv2.destroyAllWindows()
