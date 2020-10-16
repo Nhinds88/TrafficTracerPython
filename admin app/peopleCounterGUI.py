@@ -6,10 +6,6 @@ from datetime import datetime
 from tkinter import filedialog
 from PIL import ImageTk, Image
 
-# =============================================================================
-# https://github.com/Gupu25/PeopleCounter
-# =============================================================================
-
 from random import randint
 import time
 
