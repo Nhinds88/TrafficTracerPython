@@ -147,7 +147,7 @@ def insertPeopleData(ete, pid, mid, dur, date, t, db):
 
     
 
-def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, db, date):
+def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, db, date, time):
     
     ret, frame1 = video.read()
     ret, frame2 = video.read()
@@ -155,6 +155,12 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
     peopleID = 0
     custID = 0
     people = []
+    
+    st = time.split(":")
+
+    h = int(st[0])
+    m = int(st[1])
+    s = int(st[2])
     
     entry = 0
     exited = 0 
@@ -273,8 +279,11 @@ background_label.photo=background_image
 background_label.grid(column = 0, row = 0)
 
 date = tk.Label(root, fg='white', bg='#2A3132', text='Enter Date in Format YYYY-MM-DD: ').grid(row=1, column=0)
+time = tk.Label(root, fg='white', bg='#2A3132', text='Enter Time in Format HH:MM:SS: ').grid(row=2, column=0)
 dateEntry = tk.Entry(root)
+timeEntry = tk.Entry(root)
 dateEntry.grid(row=1, column=1)
+timeEntry.grid(row=2, column=1)
 
 def open_file(): 
     file = filedialog.askopenfilename(parent=root)
