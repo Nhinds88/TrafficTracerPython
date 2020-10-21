@@ -157,9 +157,6 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
     ret, frame1 = video.read()
     ret, frame2 = video.read()
     
-    video.set(3, 800)
-    video.set(3, 600)
-    
     peopleID = 0
     custID = 0
     people = []
@@ -279,17 +276,17 @@ background_label = tk.Label(root, bg='#2A3132', image=background_image)
 background_label.photo=background_image
 background_label.grid(column = 0, row = 0)
 
-date = tk.Label(root, fg='white', bg='#2A3132', text='line start (x,y)').grid(row=1, column=0)
+date = tk.Label(root, fg='white', bg='#2A3132', text='Date:').grid(row=1, column=0)
 
 #l1 = tk.Label(root, fg='white', bg='#2A3132', text='line start (x,y)').grid(row=1, column=0)
 #l2 = tk.Label(root, fg='white', bg='#2A3132', text='line end (x,y)').grid(row=2, column=0)
 #l3 = tk.Label(root, fg='white', bg='#2A3132', text='Contour Limit').grid(row=3, column=0)
-#startX = tk.Entry(root)
+date = tk.Entry(root)
 #startY = tk.Entry(root)
 #endX = tk.Entry(root)
 #endY = tk.Entry(root)
 #contourLimit = tk.Entry(root)
-#startX.grid(row=1, column=1)
+date.grid(row=1, column=1)
 #startY.grid(row=1, column=3)
 #endX.grid(row=2, column=1)
 #endY.grid(row=2, column=3)

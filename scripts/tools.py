@@ -82,9 +82,6 @@ def process_video(video, lineStart, lineEnd, v_or_h, flipped, contourLimit, merc
     ret, frame1 = video.read()
     ret, frame2 = video.read()
     
-    video.set(3, 800)
-    video.set(3, 600)
-    
     peopleID = 0
     custID = 0
     people = []
@@ -99,14 +96,19 @@ def process_video(video, lineStart, lineEnd, v_or_h, flipped, contourLimit, merc
         if check:
             
             diff = cv2.absdiff(frame1, frame2)
+            # cv2.imshow("diff", diff)
             gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
+            # cv2.imshow("gray", gray)
             blur = cv2.GaussianBlur(gray, (5, 5), 0)
+            # cv2.imshow("blur", blur)
             _, thresh = cv2.threshold(blur, 20, 255, cv2.THRESH_BINARY)
+            # cv2.imshow("thresh", thresh)
             dilated = cv2.dilate(thresh, None, iterations = 3)
+            # cv2.imshow("dilated", dilated)
             contours, _ = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-                
-            cv2.line(frame1, (lineStart[0], lineStart[1]), (lineEnd[0], lineEnd[1]), (255, 0, 255), 2)
-                
+            # draw = cv2.drawContours(dilated, contours, -1, (0,255,0), 3)
+            # cv2.imshow("Countours", draw)
+            cv2.line(frame1, (lineStart[0], lineStart[1]), (lineEnd[0], lineEnd[1]), (255, 0, 255), 2)    
             
             for contour in contours:
                 

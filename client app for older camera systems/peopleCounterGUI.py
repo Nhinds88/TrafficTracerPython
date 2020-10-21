@@ -9,6 +9,7 @@ from PIL import ImageTk, Image
 from random import randint
 import time
 
+#### Customer Object
 class Customer:
     tracks = []
     def __init__(self, i, xi, yi):
@@ -110,12 +111,6 @@ def lineCoords(x, y):
 def isVerticalORHorizontal(i):
     return i
 
-def setResolution(video, height, width):
-    video.set(3, height)
-    video.set(4, width)
-    
-    return video
-
 def contourLimit(c):
     return c
 
@@ -152,13 +147,10 @@ def insertPeopleData(ete, pid, mid, dur, date, t, db):
 
     
 
-def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, db):
+def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, db, date):
     
     ret, frame1 = video.read()
     ret, frame2 = video.read()
-    
-    video.set(3, 800)
-    video.set(3, 600)
     
     peopleID = 0
     custID = 0
@@ -208,7 +200,7 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
         
                                 t = getTime()
                                 
-                                insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
+                                insertPeopleData('enter', custID, merchantid, 0.0, date, t[1], db)
                                 
                             if i.exitingV(lineStart[1]) == True:
                                 
@@ -217,7 +209,7 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
                                 
                                 t = getTime()
                                 
-                                insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
+                                insertPeopleData('exit', custID, merchantid, 0.0, date, t[1], db)
                                 
                         if v_or_h == 'h':
                             
@@ -228,7 +220,7 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
                                 
                                 t = getTime()
                                 
-                                insertPeopleData('enter', custID, merchantid, 0.0, t[0], t[1], db)
+                                insertPeopleData('enter', custID, merchantid, 0.0, date, t[1], db)
                                 
                             if i.exitingH(lineStart[0]) == True:
                                 
@@ -237,7 +229,7 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
                                 
                                 t = getTime()
                                 
-                                insertPeopleData('exit', custID, merchantid, 0.0, t[0], t[1], db)
+                                insertPeopleData('exit', custID, merchantid, 0.0, date, t[1], db)
                             
                         break
                     
@@ -265,6 +257,7 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
     video.release()
 
 db = dbConnnect("d1kb8x1fu8rhcnej.cbetxkdyhwsb.us-east-1.rds.amazonaws.com", "cg0qk6kstr07a5z4", "dw56x2swou8s05vw", "ljovr7av2qudtk53")
+######## GUI #########################
 root = tk.Tk()
 
 root.title("Traffic Tracer")
@@ -279,42 +272,17 @@ background_label = tk.Label(root, bg='#2A3132', image=background_image)
 background_label.photo=background_image
 background_label.grid(column = 0, row = 0)
 
-date = tk.Label(root, fg='white', bg='#2A3132', text='line start (x,y)').grid(row=1, column=0)
-
-#l1 = tk.Label(root, fg='white', bg='#2A3132', text='line start (x,y)').grid(row=1, column=0)
-#l2 = tk.Label(root, fg='white', bg='#2A3132', text='line end (x,y)').grid(row=2, column=0)
-#l3 = tk.Label(root, fg='white', bg='#2A3132', text='Contour Limit').grid(row=3, column=0)
-#startX = tk.Entry(root)
-#startY = tk.Entry(root)
-#endX = tk.Entry(root)
-#endY = tk.Entry(root)
-#contourLimit = tk.Entry(root)
-#startX.grid(row=1, column=1)
-#startY.grid(row=1, column=3)
-#endX.grid(row=2, column=1)
-#endY.grid(row=2, column=3)
-#contourLimit.grid(row=3, column=1)
-
-#r1 = tk.Radiobutton(root, fg='white', bg='#2A3132', text="Vertical", variable=vorh, value="v")
-#r2 = tk.Radiobutton(root, fg='white', bg='#2A3132', text="Horizontal", variable=vorh, value="h")
-#r1.grid(row=4, column=0)
-#r2.grid(row=4, column=1)
-#r1.select()
-#r2.select()
+date = tk.Label(root, fg='white', bg='#2A3132', text='Enter Date in Format YYYY-MM-DD: ').grid(row=1, column=0)
+dateEntry = tk.Entry(root)
+dateEntry.grid(row=1, column=1)
 
 def open_file(): 
     file = filedialog.askopenfilename(parent=root)
     print(file)
-    #x1 = int(startX.get())
-    #y1 = int(startY.get())
-    #x2 = int(endX.get())
-    #y2 = int(endY.get())
-    #c = int(contourLimit.get())
-    #o = vorh.get()
     video = cv2.VideoCapture(file)
     startPoint = lineCoords(x1, y1)
     endPoint = lineCoords(x2, y2)
-    process_video(video, startPoint, endPoint, o, c, 2, db)
+    process_video(video, startPoint, endPoint, o, c, 2, db, d)
 
 labelFrame = tk.LabelFrame(root, fg='white', bg='#2A3132', text = "Open File")
 labelFrame.grid(column = 0, row = 6, padx = 20, pady = 20)
