@@ -20,7 +20,6 @@ class Customer:
         self.done = False
         self.state = '0'
         self.dir = None
-        self.eventTime = ''
     def getTracks(self):
         return self.tracks
     def getId(self):
@@ -48,7 +47,6 @@ class Customer:
                 if self.tracks[-1][1] < point and self.tracks[-2][1] >= point:
                     state = '1'
                     self.dir = 'entered'
-                    self.eventTime = time.asctime(time.localtime())
                     
                     return True
             else:
@@ -61,7 +59,6 @@ class Customer:
                 if self.tracks[-1][1] > point and self.tracks[-2][1] <= point: 
                     state = '1'
                     self.dir = 'exited'
-                    self.eventTime = time.asctime(time.localtime())
                     
                     return True
             else:
@@ -74,7 +71,6 @@ class Customer:
                 if self.tracks[-1][0] < point and self.tracks[-2][0] >= point: 
                     state = '1'
                     self.dir = 'entered'
-                    self.eventTime = time.asctime(time.localtime())
                     
                     return True
             else:
@@ -87,7 +83,6 @@ class Customer:
                 if self.tracks[-1][0] > point and self.tracks[-2][0] <= point: 
                     state = '1'
                     self.dir = 'exited'
-                    self.eventTime = time.asctime(time.localtime())
                     
                     return True
             else:
@@ -126,14 +121,6 @@ def dbConnnect(host, user, password, db):
     
     return mydb
 
-def getTime():
-    
-    now = datetime.now()
-    date = now.strftime('%Y-%m-%d')
-    eventTime = now.strftime('%H:%M:%S')
-
-    return date, eventTime
-
 def insertPeopleData(ete, pid, mid, dur, date, t, db):
     
     cursor = db.cursor()
@@ -158,8 +145,8 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
     
     st = time.split(":")
 
-    h = int(st[0])
-    m = int(st[1])
+    hour = int(st[0])
+    minutes = int(st[1])
     s = int(st[2])
     
     entry = 0
@@ -170,6 +157,21 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
         check, _ = video.read()
         
         if check:
+            
+            milli = video.get(cv2.CAP_PROP_POS_MSEC)
+            sec = milli / 1000 
+            # print(round(sec))
+            seconds = s + sec
+            if seconds == 60:
+                seconds = 0
+                minutes += 1
+            if minutes == 60:
+                minutes = 0
+                hour += 1
+            if hour == 24:
+                hour = 0
+            
+            currentVideoTime = str(hour) + ":" + str(minutes) + ":" + str(round(seconds))
             
             diff = cv2.absdiff(frame1, frame2)
             gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
@@ -203,19 +205,15 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
                                 
                                 entry += 1
                                 custID += 1
-        
-                                t = getTime()
                                 
-                                insertPeopleData('enter', custID, merchantid, 0.0, date, t[1], db)
+                                insertPeopleData('enter', custID, merchantid, 0.0, date, currentVideoTime, db)
                                 
                             if i.exitingV(lineStart[1]) == True:
                                 
                                 exited += 1
                                 custID += 1
                                 
-                                t = getTime()
-                                
-                                insertPeopleData('exit', custID, merchantid, 0.0, date, t[1], db)
+                                insertPeopleData('exit', custID, merchantid, 0.0, date, currentVideoTime, db)
                                 
                         if v_or_h == 'h':
                             
@@ -224,18 +222,14 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
                                 entry += 1
                                 custID
                                 
-                                t = getTime()
-                                
-                                insertPeopleData('enter', custID, merchantid, 0.0, date, t[1], db)
+                                insertPeopleData('enter', custID, merchantid, 0.0, date, currentVideoTime, db)
                                 
                             if i.exitingH(lineStart[0]) == True:
                                 
                                 exited += 1
                                 custID += 1
                                 
-                                t = getTime()
-                                
-                                insertPeopleData('exit', custID, merchantid, 0.0, date, t[1], db)
+                                insertPeopleData('exit', custID, merchantid, 0.0, date, currentVideoTime, db)
                             
                         break
                     
@@ -243,13 +237,16 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
                     p = Customer(peopleID, x, y)
                     people.append(p)
                     peopleID += 1
-                
-                cv2.rectangle(frame1, (x,y), (x + w, y + h), (0, 255, 0), 2)
-                
-                cv2.putText(frame1, "Entered: {}".format(entry), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-                cv2.putText(frame1, "Exited: {}".format(exited), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1) 
-                
-            cv2.imshow('vid', frame1)
+            ##################################################
+                # used for finding camera specific parameters#
+                ##############################################
+                # cv2.rectangle(frame1, (x,y), (x + w, y + h), (0, 255, 0), 2)
+                # 
+                # cv2.putText(frame1, "Entered: {}".format(entry), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                # cv2.putText(frame1, "Exited: {}".format(exited), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        
+            #cv2.imshow('vid', frame1)
+            ##################################################
             frame1 = frame2
             ret, frame2 = video.read()
             
@@ -257,7 +254,7 @@ def process_video(video, lineStart, lineEnd, v_or_h, contourLimit, merchantid, d
             break
         
         if cv2.waitKey(5) == ord('x'):
-                break
+            break
             
     cv2.destroyAllWindows()
     video.release()
@@ -289,9 +286,10 @@ def open_file():
     file = filedialog.askopenfilename(parent=root)
     print(file)
     video = cv2.VideoCapture(file)
-    startPoint = lineCoords(x1, y1)
-    endPoint = lineCoords(x2, y2)
-    process_video(video, startPoint, endPoint, o, c, 2, db, d)
+    # Custom values are Client Specific and should not be changed unless camera is moved. 
+    startPoint = lineCoords(0, 240)
+    endPoint = lineCoords(640, 240)
+    process_video(video, startPoint, endPoint, 'v', 4000, 2, db, dateEntry.get(), timeEntry.get())
 
 labelFrame = tk.LabelFrame(root, fg='white', bg='#2A3132', text = "Open File")
 labelFrame.grid(column = 0, row = 6, padx = 20, pady = 20)
