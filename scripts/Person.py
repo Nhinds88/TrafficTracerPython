@@ -2,8 +2,6 @@
 # Adapted from
 # https://github.com/Gupu25/PeopleCounter
 # =============================================================================
-
-from random import randint
 import time
 
 class Customer:
@@ -90,11 +88,3 @@ class Customer:
                 return False
         else:
             return False
-class MultiPerson:
-    def __init__(self, persons, xi, yi):
-        self.persons = persons
-        self.x = xi
-        self.y = yi
-        self.tracks = []
-        self.done = False
-        

@@ -9,6 +9,11 @@ from PIL import ImageTk, Image
 from random import randint
 import time
 
+# =============================================================================
+# Adapted from
+# https://github.com/Gupu25/PeopleCounter
+# =============================================================================
+
 #### Customer Object
 class Customer:
     tracks = []
@@ -89,13 +94,6 @@ class Customer:
                 return False
         else:
             return False
-class MultiPerson:
-    def __init__(self, persons, xi, yi):
-        self.persons = persons
-        self.x = xi
-        self.y = yi
-        self.tracks = []
-        self.done = False
 
 def cameraSource(source):
     return source

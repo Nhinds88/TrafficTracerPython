@@ -13,14 +13,6 @@ import os
 
 from datetime import datetime
 
-# Standard Video Dimensions Sizes
-STD_DIMENSIONS =  {
-    "480p": (640, 480),
-    "720p": (1280, 720),
-    "1080p": (1920, 1080),
-    "4k": (3840, 2160),
-}
-
 def cameraSource(source):
     return source
 
@@ -29,12 +21,6 @@ def lineCoords(x, y):
 
 def isVerticalORHorizontal(i):
     return i
-
-def setResolution(video, height, width):
-    video.set(3, height)
-    video.set(4, width)
-    
-    return video
 
 def contourLimit(c):
     return c
@@ -69,13 +55,6 @@ def insertPeopleData(ete, pid, mid, dur, date, t, db):
     cursor.execute(sql, val)
     
     db.commit()
-    
-# Set resolution for the video capture
-# Function adapted from https://kirr.co/0l6qmh
-def change_res(cap, width, height):
-    cap.set(3, width)
-    cap.set(4, height)
-      
 
 def process_video(video, lineStart, lineEnd, v_or_h, flipped, contourLimit, merchantid, db):
     
@@ -220,14 +199,17 @@ def process_video(video, lineStart, lineEnd, v_or_h, flipped, contourLimit, merc
                     p = Person.Customer(peopleID, x, y)
                     people.append(p)
                     peopleID += 1
+            ##################################################
+                # used for finding camera specific parameters#
+                ##############################################    
+            #     cv2.rectangle(frame1, (x,y), (x + w, y + h), (0, 255, 0), 2)
+            #     cv2.circle(frame1, (x,y), 5, (0, 0, 255), 2)
                 
-                cv2.rectangle(frame1, (x,y), (x + w, y + h), (0, 255, 0), 2)
-                cv2.circle(frame1, (x,y), 5, (0, 0, 255), 2)
+            #     cv2.putText(frame1, "Entered: {}".format(entry), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+            #     cv2.putText(frame1, "Exited: {}".format(exited), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1) 
                 
-                cv2.putText(frame1, "Entered: {}".format(entry), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-                cv2.putText(frame1, "Exited: {}".format(exited), (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1) 
-                
-            cv2.imshow('vid', frame1)
+            # cv2.imshow('vid', frame1)
+            ##################################################
             frame1 = frame2
             ret, frame2 = video.read()
             
