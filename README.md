@@ -12,3 +12,11 @@ There are several versions of the applicaion.
   2. The Client version usd for clients with older camera systems that cannot provide a stream to Traffic Tracer. this version has the hard coded parameters for the customers camera and only requires the customer to enter the date and start time of the video. 
   
   3. the raw python scripts used for feature development.
+
+
+To run you'll need a few libraries:
+
+pip install scipy
+pip install numpy
+pip install opencv-contrib-python
+pip install mysql-connector-python
