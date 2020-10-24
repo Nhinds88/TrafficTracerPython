@@ -15,7 +15,10 @@ There are several versions of the applicaion.
 
 To run you'll need a few libraries:
 
-pip install scipy/n
-pip install numpy/n
-pip install opencv-contrib-python/n
+pip install scipy
+
+pip install numpy
+
+pip install opencv-contrib-python
+
 pip install mysql-connector-python
